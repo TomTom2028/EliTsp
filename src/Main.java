@@ -15,13 +15,15 @@ public class Main {
     }
 
     public Main() {
-        this.random = new Random();
+        this.random = new Random(14);
     }
 
     public void doThing() {
-        Graph graph = Graph.generateRandomFullyConnectedGraph(random, 500);
-        graph.convertToMSP();
-        System.out.println(graph);
+        Graph graph = Graph.generateRandomTSPGraph(75, random);
+       //Graph graph = Graph.generateRandomTSPGraph(200, random);
+       Solver solver = new Solver(graph, new Random());
+       solver.solve();
+       solver.showPath();
     }
 
 }

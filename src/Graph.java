@@ -20,74 +20,40 @@ public class Graph {
     }
 
 
-    public void convertToMSP() {
-        List<Node> mspNodes = new ArrayList<>();
-        List<Edge> mspEdges = new ArrayList<>();
-        List<Edge> adjacentEdges = new ArrayList<>();
 
-
-        Node startNode = nodes.get(0);
-        nodes.remove(startNode);
-        mspNodes.add(startNode);
-        for (Edge edge : startNode.getEdges()) {
-            adjacentEdges.add(edge);
-        }
-        while (!nodes.isEmpty()) {
-            Edge minEdge = adjacentEdges.stream().min(Comparator.comparingInt(Edge::getWeight)).get();
-            Node from = minEdge.getFrom();
-            Node to = minEdge.getTo();
-            // find out which node is not in mspNodes
-            Node newNode = mspNodes.contains(from) ? to : from;
-            mspNodes.add(newNode);
-            mspEdges.add(minEdge);
-            nodes.remove(newNode);
-
-            adjacentEdges.remove(minEdge);
-            // also remove all edges from the adjacent edges were both nodes are already in mspNodes
-            adjacentEdges.removeIf(edge -> mspNodes.contains(edge.getFrom()) && mspNodes.contains(edge.getTo()));
-
-            for (Edge edge : newNode.getEdges()) {
-                if (!mspEdges.contains(edge) && (
-                        (mspNodes.contains(edge.getFrom()) && !mspNodes.contains(edge.getTo())) ||
-                                (!mspNodes.contains(edge.getFrom()) && mspNodes.contains(edge.getTo())))
-                        ) {
-                    adjacentEdges.add(edge);
-                }
-            }
+    public static Graph generateRandomTSPGraph(int amountOfNodes, Random random) {
+        List<Node> nodes = new ArrayList<>();
+        for (int i = 0; i < amountOfNodes; i++) {
+            int x = random.nextInt(800);
+            int y = random.nextInt(800);
+            nodes.add(new Node(i, x, y));
         }
 
-        nodes = mspNodes;
-        edges = mspEdges;
-        return;
-    }
 
-
-
-
-    public static Graph generateRandomFullyConnectedGraph(Random random, int n) {
-        Graph graph = new Graph();
-        for (int i = 0; i < n; i++) {
-            Node node = new Node(i);
-            graph.nodes.add(node);
-        }
-        int edgeId = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                Node from = graph.nodes.get(i);
-                Node to = graph.nodes.get(j);
-                int edgeWeight = generateRandomEdge(random);
-                Edge edge = new Edge(edgeId, from, to, edgeWeight);
-                edgeId++;
+        List<Edge> edges = new ArrayList<>();
+        for (int i = 0; i < amountOfNodes; i++) {
+            Node from = nodes.get(i);
+            for (int j = i + 1; j < amountOfNodes; j++) {
+                Node to = nodes.get(j);
+                int weight = (int) Math.sqrt(Math.pow(from.getX() - to.getX(), 2) + Math.pow(from.getY() - to.getY(), 2));
+                Edge edge = new Edge(i * amountOfNodes + j, from, to, weight);
                 from.addEdge(edge);
                 to.addEdge(edge);
+                edges.add(edge);
             }
         }
+
+        Graph graph = new Graph();
+        graph.nodes = nodes;
+        graph.edges = edges;
         return graph;
     }
 
+    public List<Node> getNodes() {
+        return nodes;
+    }
 
-
-    private static int generateRandomEdge(Random random) {
-        return random.nextInt(100, 10000);
+    public List<Edge> getEdges() {
+        return edges;
     }
 }
