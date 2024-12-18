@@ -20,9 +20,19 @@ public class SimulatedAnnealing {
 
     public double getMaxDelta() {
         double randomValue = random.nextDouble();
+        if (randomValue == 0) {
+            temperature *= coolingRate;
+            return Double.MAX_VALUE;
+        }
         double maxDelta =  -Math.log(randomValue) * temperature;
         temperature *= coolingRate;
         return maxDelta;
+    }
+
+    public boolean acceptDelta(double delta) {
+        double chance = Math.exp(-delta / temperature);
+        temperature *= coolingRate;
+        return random.nextDouble() < chance;
     }
 
     public double getTemperature() {
