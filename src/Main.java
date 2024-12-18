@@ -19,7 +19,8 @@ public class Main {
     }
 
     public void doThing() {
-        Graph graph = Graph.generateRandomTSPGraph(80, random);
+        Graph graph = Graph.generateRandomTSPGraph(75, random);
+        System.out.println(graph.toEliString());
        //Graph graph = Graph.generateRandomTSPGraph(200, random);
        Solver solver = new Solver(graph, new Random());
        solver.solve();

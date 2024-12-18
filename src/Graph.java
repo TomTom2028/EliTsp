@@ -24,8 +24,8 @@ public class Graph {
     public static Graph generateRandomTSPGraph(int amountOfNodes, Random random) {
         List<Node> nodes = new ArrayList<>();
         for (int i = 0; i < amountOfNodes; i++) {
-            int x = random.nextInt(800);
-            int y = random.nextInt(800);
+            int x = random.nextInt(1000);
+            int y = random.nextInt(600);
             nodes.add(new Node(i, x, y));
         }
 
@@ -57,5 +57,18 @@ public class Graph {
         return edges;
     }
 
-    
+    public String toEliString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (Node node : nodes) {
+            sb.append("{\"x\":").append(node.getX()).append(",\"y\":").append(node.getY()).append("}");
+            if (node != nodes.get(nodes.size() - 1)) {
+                sb.append(",");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+
 }
