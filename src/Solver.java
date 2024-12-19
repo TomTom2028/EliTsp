@@ -36,6 +36,8 @@ public class Solver {
    private double distance;
    SimulatedAnnealing annealing;
 
+   private MoveGenerator moveGenerator;
+
 
 
     public Solver(Graph graph, Random random) {
@@ -48,6 +50,7 @@ public class Solver {
         System.out.println("delta: " + delta);
         System.out.println("temp: " + temp);
         this.annealing = new SimulatedAnnealing(temp, delta, random);
+        this.moveGenerator = new TwoOptMoveGenerator(random, distanceMatrix);
 
     }
 
@@ -117,13 +120,7 @@ public class Solver {
 
         while (timesRefused < 100000 || annealing.getTemperature() > 0.5) {
             // take a random node from path (except the first and last node)
-            int firstIndex = getRandomIndexFromPath();
-            int secondIndex = getRandomIndexFromPath(firstIndex);
-            Node first = path.get(firstIndex);
-            Node second = path.get(secondIndex);
-
-
-            double delta = calculate2SwapDelta(firstIndex, secondIndex);
+            Move move = moveGenerator.generate(path);
             index++;
             if (index % 10000000 == 0) {
                 index = 0;
@@ -133,16 +130,14 @@ public class Solver {
 
 
             // et voila, delta is calculated, the following shoulldddd be just moved to a fn but lazy
-            if (!annealing.acceptDelta(delta)) {
+            if (!annealing.acceptDelta(move.getDelta())) {
                 timesRefused++;
                 continue;
             }
 
-            // swap
-            path.set(firstIndex, second);
-            path.set(secondIndex, first);
-
-            distance += delta;
+           // apply
+            move.apply();
+            distance += move.getDelta();
 
             timesRefused /= 1.005;
 
@@ -154,65 +149,7 @@ public class Solver {
         }
     }
 
-    private double calculate2SwapDelta(int firstIndex, int secondIndex) {
-        int indexDelta = Math.abs(firstIndex - secondIndex);
-        if (indexDelta > 1) {
-            // base case
-            // take one before, and one after for each
-            Node firstBefore = path.get(firstIndex - 1);
-            Node first = path.get(firstIndex);
-            Node firstAfter = path.get(firstIndex + 1);
 
-            Node secondBefore = path.get(secondIndex - 1);
-            Node second = path.get(secondIndex);
-            Node secondAfter = path.get(secondIndex + 1);
-
-            // now, we "swap" first and second. create a singed delta
-            double delta = 0;
-            delta -= distanceMatrix.getDistance(firstBefore, first);
-            delta -= distanceMatrix.getDistance(first, firstAfter);
-            delta -= distanceMatrix.getDistance(secondBefore, second);
-            delta -= distanceMatrix.getDistance(second, secondAfter);
-
-            delta += distanceMatrix.getDistance(firstBefore, second);
-            delta += distanceMatrix.getDistance(second, firstAfter);
-            delta += distanceMatrix.getDistance(secondBefore, first);
-            delta += distanceMatrix.getDistance(first, secondAfter);
-
-            return delta;
-        } else if (indexDelta == 1){
-            int smallestIndex = Math.min(firstIndex, secondIndex);
-            int largestIndex = Math.max(firstIndex, secondIndex);
-
-            Node beforeSmallest = path.get(smallestIndex - 1);
-            Node smallest = path.get(smallestIndex);
-            Node largest = path.get(largestIndex);
-            Node afterLargest = path.get(largestIndex + 1);
-
-            double delta = 0;
-            delta -= distanceMatrix.getDistance(beforeSmallest, smallest);
-            delta -= distanceMatrix.getDistance(largest, afterLargest);
-
-            delta += distanceMatrix.getDistance(beforeSmallest, largest);
-            delta += distanceMatrix.getDistance(smallest, afterLargest);
-            return delta;
-        }
-        throw new RuntimeException("Invalid index delta");
-    }
-
-
-
-    private int getRandomIndexFromPath() {
-        return random.nextInt(path.size() - 2) + 1;
-    }
-
-    private int getRandomIndexFromPath(int except) {
-        int index = getRandomIndexFromPath();
-        while (index == except) {
-            index = getRandomIndexFromPath();
-        }
-        return index;
-    }
 
 
 
