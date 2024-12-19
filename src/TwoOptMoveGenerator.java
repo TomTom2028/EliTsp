@@ -27,7 +27,7 @@ public class TwoOptMoveGenerator implements MoveGenerator {
     }
 
 
-    private double calculate2SwapDelta(int firstIndex, int secondIndex, List<Node> path) {
+    public double calculate2SwapDelta(int firstIndex, int secondIndex, List<Node> path) {
         int indexDelta = Math.abs(firstIndex - secondIndex);
         if (indexDelta > 1) {
             // base case

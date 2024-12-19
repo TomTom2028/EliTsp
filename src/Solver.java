@@ -45,12 +45,12 @@ public class Solver {
          this.path = new ArrayList<>();
          this.distanceMatrix = DistanceMatrix.createFromGraph(graph);
          this.random = random;
-         double delta = (1 - 0.000005 / graph.getNodes().size());
+         double delta = (1 - 0.00002 / graph.getNodes().size());
          double temp = 12 * graph.getNodes().size();
         System.out.println("delta: " + delta);
         System.out.println("temp: " + temp);
         this.annealing = new SimulatedAnnealing(temp, delta, random);
-        this.moveGenerator = new TwoOptMoveGenerator(random, distanceMatrix);
+        this.moveGenerator = new MultiMoveGenerator(random, distanceMatrix);
 
     }
 

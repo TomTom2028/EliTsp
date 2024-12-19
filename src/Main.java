@@ -15,7 +15,7 @@ public class Main {
     }
 
     public Main() {
-        this.random = new Random(178);
+        this.random = new Random(110011);
     }
 
     public void doThing() {
