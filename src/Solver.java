@@ -8,6 +8,19 @@ import java.util.*;
  */
 
 public class Solver {
+
+    private static class EdgeSwapData {
+        public int firstFrom;
+        public int firstTo;
+
+        public int secondFrom;
+        public int secondTo;
+
+
+        public double delta;
+    }
+
+
    private Graph graph;
 
    private List<Node> path;
@@ -30,7 +43,11 @@ public class Solver {
          this.path = new ArrayList<>();
          this.distanceMatrix = DistanceMatrix.createFromGraph(graph);
          this.random = random;
-        this.annealing = new SimulatedAnnealing(600, 0.9999998, random);
+         double delta = (1 - 0.000005 / graph.getNodes().size());
+         double temp = 12 * graph.getNodes().size();
+        System.out.println("delta: " + delta);
+        System.out.println("temp: " + temp);
+        this.annealing = new SimulatedAnnealing(temp, delta, random);
 
     }
 
@@ -46,9 +63,6 @@ public class Solver {
     // works better!
     private void randomInitialPath() {
         List<Node> toVisit = new LinkedList<>(graph.getNodes());
-        toVisit.remove(0);
-        Node current = graph.getNodes().get(0);
-        path.add(current);
         while (!toVisit.isEmpty()) {
             int index = random.nextInt(toVisit.size());
             Node next = toVisit.get(index);
@@ -56,7 +70,7 @@ public class Solver {
             toVisit.remove(index);
         }
 
-        path.add(graph.getNodes().get(0));
+        path.add(path.get(0));
 
         distance = 0;
         for (int i = 0; i < path.size() - 1; i++) {
@@ -101,7 +115,7 @@ public class Solver {
         double timesRefused = 0;
         int index = 0;
 
-        while (timesRefused < 100000 || annealing.getTemperature() > 1) {
+        while (timesRefused < 100000 || annealing.getTemperature() > 0.5) {
             // take a random node from path (except the first and last node)
             int firstIndex = getRandomIndexFromPath();
             int secondIndex = getRandomIndexFromPath(firstIndex);
@@ -185,6 +199,8 @@ public class Solver {
         }
         throw new RuntimeException("Invalid index delta");
     }
+
+
 
     private int getRandomIndexFromPath() {
         return random.nextInt(path.size() - 2) + 1;
