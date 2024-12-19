@@ -9,9 +9,9 @@ public class Edge {
     private int id;
     private Node from;
     private Node to;
-    private int weight;
+    private double weight;
 
-    public Edge(int id, Node from, Node to, int weight) {
+    public Edge(int id, Node from, Node to, double weight) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -26,7 +26,7 @@ public class Edge {
         return node == from ? to : from;
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 

@@ -36,8 +36,8 @@ public class Solver {
 
 
     public void solve () {
-        randomInitialPath();
         //generateInitialPath();
+        randomInitialPath();
         System.out.println("begin iterative improve");
         iterativeImprove();
         System.out.println("si");
@@ -79,7 +79,7 @@ public class Solver {
 
             // get the greedy closest node
             Node finalNext = next;
-            next = next.getEdges().stream().sorted(Comparator.comparingInt(Edge::getWeight))
+            next = next.getEdges().stream().sorted(Comparator.comparingDouble(Edge::getWeight))
                     .map(edge -> edge.getOther(finalNext)).filter(node -> !path.contains(node)).findFirst().orElse(null);
         }
 

@@ -35,7 +35,7 @@ public class Graph {
             Node from = nodes.get(i);
             for (int j = i + 1; j < amountOfNodes; j++) {
                 Node to = nodes.get(j);
-                int weight = (int) Math.sqrt(Math.pow(from.getX() - to.getX(), 2) + Math.pow(from.getY() - to.getY(), 2));
+                double weight =  Math.sqrt(Math.pow(from.getX() - to.getX(), 2) + Math.pow(from.getY() - to.getY(), 2));
                 Edge edge = new Edge(i * amountOfNodes + j, from, to, weight);
                 from.addEdge(edge);
                 to.addEdge(edge);
