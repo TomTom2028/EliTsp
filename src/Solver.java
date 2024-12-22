@@ -106,7 +106,9 @@ public class Solver {
         double timesRefused = 0;
         int index = 0;
 
-        while (timesRefused < 100000 || annealing.getTemperature() > 0.5) {
+        int realDeltaZeroCounter = 0;
+
+        while ((timesRefused < 100000 || annealing.getTemperature() > 0.5) && realDeltaZeroCounter < 100000) {
             // take a random node from path (except the first and last node)
             Move move = moveGenerator.generate(path);
             index++;
@@ -125,7 +127,13 @@ public class Solver {
 
            // apply
             move.apply();
-            distance += move.getDelta();
+            double realDelta = Math.round(move.getDelta() * 10000) / 10000.0;
+            distance += realDelta;
+            if (realDelta == 0) {
+                realDeltaZeroCounter++;
+            } else {
+                realDeltaZeroCounter = 0;
+            }
 
             timesRefused /= 1.005;
 
