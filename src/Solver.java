@@ -9,18 +9,6 @@ import java.util.*;
 
 public class Solver {
 
-    private static class EdgeSwapData {
-        public int firstFrom;
-        public int firstTo;
-
-        public int secondFrom;
-        public int secondTo;
-
-
-        public double delta;
-    }
-
-
    private Graph graph;
 
    private List<Node> path;
@@ -45,7 +33,7 @@ public class Solver {
          this.path = new ArrayList<>();
          this.distanceMatrix = DistanceMatrix.createFromGraph(graph);
          this.random = random;
-         double delta = (1 - 0.00002 / graph.getNodes().size());
+         double delta = (1 - 0.0005 / graph.getNodes().size());
          double temp = 12 * graph.getNodes().size();
         System.out.println("delta: " + delta);
         System.out.println("temp: " + temp);
@@ -150,8 +138,13 @@ public class Solver {
     }
 
 
+    public double getAbsoluteBestDistance() {
+        return absoluteBestDistance;
+    }
 
-
+    public List<Node> getAbsoluteBestPath() {
+        return absoluteBestPath;
+    }
 
     public void showPath() {
         PathVisualizer.showPath(absoluteBestPath, distanceMatrix);

@@ -31,8 +31,13 @@ public class SimulatedAnnealing {
 
     public boolean acceptDelta(double delta) {
         double chance = Math.exp(-delta / temperature);
-        temperature *= coolingRate;
-        return random.nextDouble() < chance;
+        boolean accept =  random.nextDouble() < chance;
+        if (accept) {
+            temperature *= coolingRate;
+        } else if (random.nextDouble() < 0.2) {
+            temperature *= coolingRate;
+        }
+        return accept;
     }
 
     public double getTemperature() {

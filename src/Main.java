@@ -15,11 +15,11 @@ public class Main {
     }
 
     public Main() {
-        this.random = new Random(110011);
+        this.random = new Random(78);
     }
 
     public void doThing() {
-        Graph graph = Graph.generateRandomTSPGraph(50, random);
+        Graph graph = Graph.generateRandomTSPGraph(75, random);
         System.out.println(graph.toEliString());
        //Graph graph = Graph.generateRandomTSPGraph(200, random);
        Solver solver = new Solver(graph, new Random());

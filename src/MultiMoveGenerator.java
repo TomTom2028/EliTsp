@@ -11,24 +11,24 @@ import java.util.Random;
 public class MultiMoveGenerator implements MoveGenerator {
     private InsertMoveGenerator insertMoveGenerator;
     private TwoOptMoveGenerator twoOptMoveGenerator;
+    private ReverseMoveGenerator reverseMoveGenerator;
 
-    private MoveGenerator[] moveGenerators;
 
     public MultiMoveGenerator(Random random, DistanceMatrix distanceMatrix) {
         insertMoveGenerator = new InsertMoveGenerator(random, distanceMatrix);
         twoOptMoveGenerator = new TwoOptMoveGenerator(random, distanceMatrix);
-        moveGenerators = new MoveGenerator[]{
-                insertMoveGenerator,
-                twoOptMoveGenerator
-        };
+        reverseMoveGenerator = new ReverseMoveGenerator(random, distanceMatrix);
     }
 
 
     @Override
     public Move generate(List<Node> path) {
-        // distribution: 75% insert, 25% twoOpt
+
+
         double randomValue = Math.random();
-        if (randomValue < 0.75) {
+        if (randomValue < 0.9) {
+            return reverseMoveGenerator.generate(path);
+        } else if (randomValue < 0.98) {
             return insertMoveGenerator.generate(path);
         } else {
             return twoOptMoveGenerator.generate(path);

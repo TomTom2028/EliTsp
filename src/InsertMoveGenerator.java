@@ -87,24 +87,6 @@ public class InsertMoveGenerator implements MoveGenerator {
             }
         }
         throw new RuntimeException("Invalid index delta");
-        /*
-
-       // just calculate delta the hard way
-        List<Node> deltaCalcPath = new ArrayList<>(path);
-        Node from = deltaCalcPath.remove(fromIndex);
-        deltaCalcPath.add(toIndex, from);
-
-        double delta = 0;
-        for (int i = 0; i < deltaCalcPath.size() - 1; i++) {
-            delta += distanceMatrix.getDistance(deltaCalcPath.get(i), deltaCalcPath.get(i + 1));
-        }
-
-        double pathCost = 0;
-        for (int i = 0; i < path.size() - 1; i++) {
-            pathCost += distanceMatrix.getDistance(path.get(i), path.get(i + 1));
-        }
-
-        return delta - pathCost;*/
     }
 
 
